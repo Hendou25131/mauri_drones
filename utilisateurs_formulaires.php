@@ -121,6 +121,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .logo-text{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:.3px;color:var(--text);}
 .logo-dash{color:var(--blue)}
+.logo-img{width:42px;height:42px;object-fit:contain;border-radius: 5px;}
 
 .site-header {
   justify-content: space-between;
@@ -274,6 +275,7 @@ td.td-id{color:var(--muted);font-size:.78rem;font-weight:600}
 
 <header class="site-header">
   <a class="logo" href="#">
+    <img src="logoPI.png" alt="Logo Mauri-Drones" class="logo-img"/>
     <span class="logo-text">Mauri<span class="logo-dash">-</span>Drones</span>
   </a>
   <a href="dashboard.php" class="btn-back-home">

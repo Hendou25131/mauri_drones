@@ -40,7 +40,7 @@ body{
   backdrop-filter:blur(10px);
 }
 .logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
-.logo-img{width:42px;height:42px;object-fit:contain;}
+.logo-img{width:42px;height:42px;object-fit:contain;border-radius: 5px;}
 .logo-text{font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:.3px;color:var(--text);}
 .logo-dash{color:var(--blue)}
 
@@ -168,7 +168,7 @@ body{
 
 <header class="site-header">
   <a class="logo" href="#">
-    <img src="logoPI.png" style="border-radius: 5px;" alt="Logo Mauri-Drones" class="logo-img"/>
+    <img src="logoPI.png" alt="Logo Mauri-Drones" class="logo-img"/>
     <span class="logo-text">Mauri<span class="logo-dash">-</span>Drones</span>
   </a>
 </header>
