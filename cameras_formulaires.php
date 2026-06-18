@@ -30,7 +30,7 @@ $lien = isset($_POST['lien']) ? htmlspecialchars(trim($_POST['lien'])) : '';
 if(!empty($marque) and !empty($modele) and !empty($categorie) and !empty($resolution) and !empty($capteur) and !empty($vision) and !empty($autonomie) and !empty($prix_mru) and !empty($statut_stock) and !empty($lien)){
 $sql="insert into cameras (marque,modele,id_categorie,resolution_max,capteur,champ_de_vision,autonomie,prix_mru,statut_stock,lien_image) values(?,?,?,?,?,?,?,?,?,?)";
 $stmt=$con->prepare($sql);
-$stmt->bind_param("ssiiiiiiss",$marque,$modele,$categorie,$resolution,$capteur,$vision,$autonomie,$prix_mru,$statut_stock,$lien);
+$stmt->bind_param("ssiisiiiss",$marque,$modele,$categorie,$resolution,$capteur,$vision,$autonomie,$prix_mru,$statut_stock,$lien);
 if($stmt->execute()){
   header("location:cameras_formulaires.php?ajout=1");
   exit();
@@ -67,7 +67,7 @@ $lien = isset($_POST['lien']) ? htmlspecialchars(trim($_POST['lien'])):'';
 if(!empty($categorie) and !empty($resolution) and !empty($capteur) and !empty($vision) and !empty($autonomie) and !empty($prix_mru) and !empty($statut_stock) and !empty($lien)){
 $sql="update cameras set id_categorie=?, resolution_max=?, capteur=?, champ_de_vision =?, autonomie=?, prix_mru=?, statut_stock=?, lien_image=? where id_modele=?";
 $stmt=$con->prepare($sql);
-$stmt->bind_param("isiiiissi",$categorie,$resolution,$capteur,$vision,$autonomie,$prix_mru,$statut_stock,$lien,$id);
+$stmt->bind_param("issiiissi",$categorie,$resolution,$capteur,$vision,$autonomie,$prix_mru,$statut_stock,$lien,$id);
 if ($stmt->execute()){
   header("location:cameras_formulaires.php?modification=1");
   exit();
