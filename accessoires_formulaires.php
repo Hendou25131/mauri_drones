@@ -1,0 +1,621 @@
+<?php
+$con = mysqli_connect("localhost", "root", "", "mauri_drones");
+
+// ── AJOUTER UN ACCESSOIRE ──
+if (isset($_POST['ajouter'])) {
+    $marque = isset($_POST['marque']) ? htmlspecialchars(trim($_POST['marque'])) : '';
+    $nom = isset($_POST['nom']) ? htmlspecialchars(trim($_POST['nom'])) : '';
+    $categorie= isset($_POST['categorie']) ? htmlspecialchars(trim($_POST['categorie'])) : ''; 
+    $compatibilite = isset($_POST['compatibilite_drone']) ? htmlspecialchars(trim($_POST['compatibilite_drone'])) : '';
+    $caracteristiques = isset($_POST['caracteristiques']) ? htmlspecialchars(trim($_POST['caracteristiques'])) : '';
+    $prix_mru = isset($_POST['prix_mru']) ? htmlspecialchars(trim($_POST['prix_mru'])) : '';
+    $lien = isset($_POST['lien']) ? htmlspecialchars(trim($_POST['lien'])) : '';
+
+    if (!empty($marque) and !empty($nom) and !empty($categorie) and !empty($compatibilite) and !empty($caracteristiques) and !empty($prix_mru) and !empty($lien)) {
+        $sql = "INSERT INTO accessoires (marque, nom, id_categorie, compatibilite_drone, caracteristiques, prix_mru, lien_image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("ssisdds", $marque, $nom, $categorie, $compatibilite, $caracteristiques, $prix_mru, $lien);
+        if ($stmt->execute()) {
+            header("location:accessoires_formulaires.php?ajout=1");
+            exit();
+        } else {
+            echo "<script> alert('erreur lors de la sauvegarde dans la base !') </script>";
+        }
+    }
+}
+
+// ── MODIFIER UN ACCESSOIRE ──
+if (isset($_POST['modifier'])) {
+    $id = isset($_POST['id']) ? (int)htmlspecialchars(trim($_POST['id'])) : "";
+    $categorie= isset($_POST['categorie']) ? htmlspecialchars(trim($_POST['categorie'])) : ''; 
+    $nom = isset($_POST['nom']) ? htmlspecialchars(trim($_POST['nom'])) : '';
+    $compatibilite = isset($_POST['compatibilite_drone']) ? htmlspecialchars(trim($_POST['compatibilite_drone'])) : '';
+    $caracteristiques = isset($_POST['caracteristiques']) ? htmlspecialchars(trim($_POST['caracteristiques'])) : '';
+    $prix_mru = isset($_POST['prix_mru']) ? htmlspecialchars(trim($_POST['prix_mru'])) : '';
+    $lien = isset($_POST['lien']) ? htmlspecialchars(trim($_POST['lien'])) : '';
+
+    if (!empty($id) and !empty($categorie) and !empty($nom) and !empty($compatibilite) and !empty($caracteristiques) and !empty($prix_mru) and !empty($lien)) {
+        $sql = "UPDATE accessoires SET id_categorie=?, nom=?, compatibilite_drone=?, caracteristiques=?, prix_mru=?, lien_Image=? WHERE Id_accessoire=?";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("isssdsi", $categorie, $nom, $compatibilite, $caracteristiques, $prix_mru, $lien, $id);
+        if ($stmt->execute()) {
+            header("location:accessoires_formulaires.php?modification=1");
+            exit();
+        } else {
+            echo "<script> alert('erreur lors de la sauvegarde dans la base !') </script>";
+        }
+    }
+}
+
+// ── SUPPRIMER UN ACCESSOIRE ──
+if (isset($_POST['supprimer'])) {
+    $id = isset($_POST['id']) ? htmlspecialchars(trim($_POST['id'])) : '';
+    $nom_confirme = isset($_POST['nom_confirm']) ? htmlspecialchars(trim($_POST['nom_confirm'])) : '';
+    if (!empty($id) and !empty($nom_confirme)) {
+        $sql = "DELETE FROM accessoires WHERE Id_accessoire=? AND nom=?";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("is", $id, $nom_confirme);
+        if ($stmt->execute()) {
+            header("location:accessoires_formulaires.php?suppression=1");
+            exit();
+        } else {
+            echo "<script> alert('erreur lors de la sauvegarde dans la base !') </script>";
+        }
+    }
+}
+
+$sql = "SELECT * FROM accessoires";
+$res = mysqli_query($con, $sql);
+
+$sql="select * from categorie where type='Accessoire'";
+$res1=mysqli_query($con,$sql);
+$res2=mysqli_query($con,$sql);
+?> 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Gestion Catalogue Accessoires — Mauri-Drones</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d0f14;
+  --surface:#13161e;
+  --card:#181c27;
+  --border:#1f2436;
+  --border2:#2a2f45;
+  --blue:#3b9eff;
+  --blue-d:#1a7de8;
+  --blue-glow:rgba(59,158,255,.2);
+  --red:#ff4b4b;
+  --red-glow:rgba(255,75,75,.18);
+  --green:#2fd98e;
+  --green-glow:rgba(47,217,142,.18);
+  --text:#e9ecf5;
+  --muted:#6b7490;
+  --label:#8892b0;
+  --r:14px;
+  --r-sm:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+
+.site-header{
+  background:rgba(13,15,20,.95);
+  border-bottom:1px solid var(--border);
+  padding:0 40px;height:64px;
+  display:flex;align-items:center;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(10px);
+}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-text{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:.3px;color:var(--text);}
+.logo-dash{color:var(--blue)}
+
+.site-header {
+  justify-content: space-between;
+}
+/* Style du bouton Retour Accueil */
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(59, 158, 255, 0.08);
+  border: 1px solid rgba(59, 158, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: var(--r-sm);
+  color: var(--blue);
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-back-home svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--blue);
+  transition: fill 0.2s;
+}
+
+/* Effet au survol (Hover) */
+.btn-back-home:hover {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+  box-shadow: 0 4px 12px var(--blue-glow);
+  text-decoration: none;
+}
+
+.btn-back-home:hover svg {
+  fill: #fff;
+}
+
+.page{max-width:1020px;margin:48px auto 48px;padding:0 24px}
+
+.page-header{
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.page-header-text { flex: 1; min-width: 250px; }
+.page-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px;}
+.page-title{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-.4px;line-height:1.1;color:var(--text);margin:0;}
+.page-title span{color:var(--blue)}
+
+.search-container { width: 280px; }
+.search-container input[type=text] {
+  padding: 11px 14px; font-size: 0.88rem; background:#0f1219;
+  border:1px solid var(--border2); border-radius:var(--r-sm); color:var(--text); width: 100%;
+}
+
+.catalogue-top-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 50px 0 20px 0; flex-wrap: wrap; gap: 16px;
+}
+.section-title {
+  font-family:'Barlow Condensed',sans-serif; font-size:1.6rem;font-weight:800;letter-spacing:-.2px; color:var(--text);margin:0;
+}
+.section-title span{color:var(--blue)}
+.panel-title-margin { margin:40px 0 20px 0; }
+
+.panel{margin-top:24px;animation:fadeUp .2s ease both}
+.panel-hidden{display:none} 
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.form-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;}
+.card-head{padding:22px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.head-icon{width:40px;height:40px;border-radius:var(--r-sm);display:grid;place-items:center;font-size:18px;flex-shrink:0;}
+.head-icon-add {background:rgba(59,158,255,.12)}
+.head-icon-edit {background:rgba(47,217,142,.12)}
+.head-icon-delete{background:rgba(255,75,75,.12)}
+.head-text h2{font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;font-weight:800;}
+.head-text p{color:var(--muted);font-size:.82rem;margin-top:2px}
+.head-chip{
+  margin-left:auto; background:rgba(59,158,255,.1);border:1px solid rgba(59,158,255,.22);
+  color:var(--blue);border-radius:20px; font-size:.68rem;font-weight:700;padding:3px 11px;
+}
+.head-chip.red{background:rgba(255,75,75,.1);border-color:rgba(255,75,75,.22);color:var(--red)}
+
+/* Élargit le conteneur principal de la page */
+.page {
+  max-width: 100% !important;
+  margin: 48px auto;
+  padding: 0 24px;
+}
+
+/* Force le tableau à occuper 100% de la largeur */
+table {
+  width: 100% !important;
+  border-collapse: collapse;
+}
+
+/* Aligne et stabilise les boutons d'action sur chaque ligne */
+.actions-cell {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap !important;
+  min-width: 170px;
+}
+
+.card-body{padding:28px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px}
+.fgrid .full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--label);}
+.field label .req{color:var(--blue);margin-left:2px}
+
+input[type=text],input[type=number],input[type=url],select,textarea{
+  background:#0f1219; border:1px solid var(--border2); border-radius:var(--r-sm);
+  color:var(--text); font-family:'Barlow',sans-serif; font-size:.92rem; padding:11px 14px; width:100%; outline:none;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow)}
+#form-edit input:focus,#form-edit select:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+#form-delete input:focus{border-color:var(--red); box-shadow:0 0 0 3px var(--red-glow)}
+
+.divider{height:1px;background:var(--border);margin:24px 0}
+.form-actions{display:flex;justify-content:flex-end;gap:10px}
+
+.btn{
+  padding:11px 22px;border-radius:var(--r-sm); font-family:'Barlow',sans-serif;font-size:.88rem;font-weight:700;border:none;cursor:pointer;
+  display:inline-flex;align-items:center;gap:7px; transition:all .18s;
+}
+.btn:active{transform:scale(.97)}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--muted)}
+.btn-ghost:hover{background:var(--surface);color:var(--text)}
+.btn-add {background:var(--blue);color:#fff}
+.btn-add:hover{background:var(--blue-d);box-shadow:0 4px 18px var(--blue-glow)}
+.btn-edit{background:var(--green);color:#0d1a10}
+.btn-edit:hover{filter:brightness(1.1);box-shadow:0 4px 18px var(--green-glow)}
+.btn-del {background:var(--red);color:#fff}
+.btn-del:hover{filter:brightness(1.08);box-shadow:0 4px 18px var(--red-glow)}
+
+.alert{
+  background:rgba(255,75,75,.08);border:1px solid rgba(255,75,75,.22); border-radius:var(--r-sm);padding:13px 16px;
+  display:flex;gap:10px; font-size:.84rem;color:#f5a4a4;margin-bottom:20px;
+}
+a{ font-weight: bold; color: white; text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+.catalogue-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.catalogue-count{
+  background:rgba(59,158,255,.1);border:1px solid #3b9eff38; color:var(--blue);border-radius:20px; font-size:.7rem;font-weight:700;padding:4px 12px;
+}
+.table-wrap{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:950px}
+thead tr{background:rgba(59,158,255,.06);border-bottom:1px solid var(--border2)}
+thead th{padding:12px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--label);text-transform:uppercase;}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr.selected{background:rgba(59,158,255,.07)!important;border-left:3px solid var(--blue)}
+td{padding:12px 14px;font-size:.88rem;vertical-align:middle}
+td.td-id{color:var(--muted);font-size:.78rem;font-weight:600}
+.td-cat{ font-size:.75rem;font-weight:700; background:rgba(59,158,255,.08);color:var(--blue); border-radius:20px;padding:3px 10px;}
+td.td-prix{font-weight:700;color:var(--green)}
+
+.actions-cell {display:flex;gap:6px;}
+.btn-action-row { font-size:.75rem;font-weight:700; padding:5px 10px;border-radius:var(--r-sm);cursor:pointer;border:none;}
+.btn-row-edit {background:rgba(47,217,142,.15);color:var(--green);border:1px solid rgba(47,217,142,.3);}
+.btn-row-edit:hover {background:var(--green);color:#0d1a10;}
+.btn-row-del {background:rgba(255,75,75,.15);color:var(--red);border:1px solid rgba(255,75,75,.3);}
+.btn-row-del:hover {background:var(--red);color:#fff;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="#">
+    <span class="logo-text">Mauri<span class="logo-dash">-</span>Drones</span>
+  </a>
+  <a href="dashboard.php" class="btn-back-home">
+    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    Retour Accueil
+  </a>
+</header>
+
+<main class="page">
+  <div class="page-header">
+    <div class="page-header-text">
+      <p class="page-eyebrow">Panneau d'administration</p>
+      <h1 class="page-title">Gestion des <span>accessoires</span></h1>
+    </div>
+    <div class="search-container">
+      <input type="text" id="search-accessoire" placeholder="🔍 Rechercher un accessoire...">
+    </div>
+  </div>
+
+  <div class="catalogue-top-bar">
+    <h2 class="section-title">Catalogue <span>actuel</span></h2>
+    <button type="button" class="btn btn-add" id="btn-trigger-add">＋ Ajouter un accessoire</button>
+  </div>
+
+  <div class="catalogue-section">
+    <div class="catalogue-header">
+      <span class="catalogue-count" id="row-count">Articles</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Actions</th>
+            <th>ID</th>
+            <th>Marque</th>
+            <th>Nom</th>
+            <th>Catégorie</th>
+            <th>Compatibilité Drone</th>
+            <th>Caractéristiques</th>
+            <th>Prix (MRU)</th>
+            <th>Lien image</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          while($tab=mysqli_fetch_assoc($res)){
+            echo "<tr data-id='".$tab['id_accessoire']."' data-nom='".htmlspecialchars($tab['nom'])."'>";
+            echo " <td class='actions-cell'> 
+                    <button class='btn-action-row btn-row-edit'>✎ Modifier</button>
+                    <button class='btn-action-row btn-row-del'>✕ Suppr.</button>
+                   </td>";
+            echo " <td class='td-id'>".$tab['id_accessoire']."</td>";
+            echo " <td>".$tab['marque']."</td>";
+            echo " <td style='font-weight:600;'>".$tab['nom']."</td>";
+            echo " <td><span class='td-cat'>".$tab['id_categorie']."</span></td>";
+            echo " <td>".$tab['compatibilite_drone']."</td>";
+            echo " <td style='max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>".$tab['caracteristiques']."</td>";
+            echo " <td class='td-prix'>".$tab['prix_mru']."</td>";
+            echo " <td style='font-size:0.75rem; color:var(--muted);'><a href='".$tab['lien_image']."'>Voir l'image</a></td>";
+            echo " </tr>";
+          }
+          ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <section id="panel-add" class="panel panel-hidden">
+    <h2 class="section-title panel-title-margin">Nouvel <span>accessoire</span></h2>
+    <div class="form-card">
+      <div class="card-head">
+        <div class="head-icon head-icon-add">➕</div>
+        <div class="head-text">
+          <h2>Ajouter un article</h2>
+          <p>Enregistrer un nouvel accessoire au catalogue</p>
+        </div>
+        <span class="head-chip">ID auto</span>
+      </div>
+      <div class="card-body">
+        <form id="form-add" method="post">
+          <div class="fgrid">
+            <div class="field">
+              <label for="a-marque">Marque <span class="req">*</span></label>
+              <input type="text" id="a-marque" name="marque" placeholder="Ex : DJI" required maxlength="120">
+            </div>
+            <div class="field">
+              <label for="a-nom">Nom de l'accessoire <span class="req">*</span></label>
+              <input type="text" id="a-nom" name="nom" placeholder="Ex : Batterie Vol Intelligente" required maxlength="255">
+            </div>
+            <div class="field">
+              <label for="a-categorie">Catégorie <span class="req">*</span></label>
+              <select id="a-categorie" name="categorie" required>
+                <option value="" disabled selected>— Sélectionner —</option>
+                <?php 
+                 while($tab=mysqli_fetch_assoc($res1)){
+                  $idc=$tab['id_categorie'];
+                  echo "<option value=$idc>".$tab['nom']."</option>";
+                } ?>
+              </select>
+            </div>
+            <div class="field">
+              <label for="a-compatibilite">Compatibilité Drone <span class="req">*</span></label>
+              <input type="text" id="a-compatibilite" name="compatibilite_drone" placeholder="Ex : DJI Air 3" required/>
+            </div>
+            <div class="field full">
+              <label for="a-caract">Caractéristiques <span class="req">*</span></label>
+              <input type="text" id="a-caract" name="caracteristiques" placeholder="Détails techniques (Ex: LiPo 4S, 5000 mAh...)" required></input>
+            </div>
+            <div class="field">
+              <label for="a-prix">Prix (MRU) <span class="req">*</span></label>
+              <input type="number" id="a-prix" name="prix_mru" placeholder="Ex : 2900" min="0" step="0.01" required/>
+            </div>
+            <div class="field full">
+              <label for="a-lien">Lien Image (URL)</label>
+              <input type="url" id="a-lien" name="lien" placeholder="https://..." maxlength="500"/>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-ghost btn-cancel">Annuler</button>
+            <button type="submit" class="btn btn-add" name="ajouter">＋ Ajouter l'accessoire</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+  
+  <section id="panel-edit" class="panel panel-hidden">
+    <h2 class="section-title panel-title-margin">Mise à <span>jour</span></h2>
+    <div class="form-card">
+      <div class="card-head">
+        <div class="head-icon head-icon-edit">✎</div>
+        <div class="head-text">
+          <h2>Modifier un accessoire</h2>
+          <p>Mettre à jour les informations de l'accessoire sélectionné</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <form id="form-edit" method="post">
+          <div class="fgrid">
+            <div class="field full">
+              <label for="e-id">ID de l'accessoire <span class="req">*</span></label>
+              <input type="number" id="e-id" name="id" required readonly/>
+            </div>
+            <div class="field">
+              <label for="e-nom">Nom de l'accessoire <span class="req">*</span></label>
+              <input type="text" id="e-nom" name="nom" required maxlength="255">
+            </div>
+            <div class="field">
+              <label for="e-categorie">Catégorie <span class="req">*</span></label>
+              <select id="e-categorie" name="categorie" required>
+                <option value="" disabled selected>— Sélectionner —</option>
+                <?php
+                 while($tab=mysqli_fetch_assoc($res2)){
+                  $idc=$tab['id_categorie'];
+                  echo "<option value=$idc>".$tab['nom']."</option>";
+                } ?>
+              </select>
+            </div>
+            <div class="field">
+              <label for="e-compatibilite">Compatibilité Drone <span class="req">*</span></label>
+              <input type="text" id="e-compatibilite" name="compatibilite_drone" required/>
+            </div>
+            <div class="field full">
+              <label for="e-caract">Caractéristiques <span class="req">*</span></label>
+              <input type="text" id="e-caract" name="caracteristiques" required></input>
+            </div>
+            <div class="field">
+              <label for="e-prix">Prix (MRU) <span class="req">*</span></label>
+              <input type="number" id="e-prix" name="prix_mru" min="0" step="0.01" required/>
+            </div>
+            <div class="field full">
+              <label for="e-lien">Lien Image (URL) <span class="req">*</span></label>
+              <input type="url" id="e-lien" name="lien" required maxlength="500"/>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-ghost btn-cancel">Annuler</button>
+            <button type="submit" class="btn btn-edit" name="modifier">✎ Enregistrer les modifications</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+  
+  <section id="panel-delete" class="panel panel-hidden">
+    <h2 class="section-title panel-title-margin">Zone de <span>danger</span></h2>
+    <div class="form-card">
+      <div class="card-head">
+        <div class="head-icon head-icon-delete">🗑</div>
+        <div class="head-text">
+          <h2>Supprimer un accessoire</h2>
+          <p>Retirer définitivement cet article du catalogue</p>
+        </div>
+        <span class="head-chip red">Irréversible</span>
+      </div>
+      <div class="card-body">
+        <div class="alert">
+          <div><strong>Attention.</strong> Cette action est définitive.</div>
+        </div>
+        <form id="form-delete" method="POST" onsubmit="return confirm('Supprimer définitivement cet accessoire ?')">
+          <div class="fgrid">
+            <div class="field">
+              <label for="d-id">ID de l'accessoire <span class="req">*</span></label>
+              <input type="number" id="d-id" name="id" required readonly/>
+            </div>
+            <div class="field">
+              <label for="d-confirm">Confirmer le nom exact <span class="req">*</span></label>
+              <input type="text" id="d-confirm" name="nom_confirm" required/>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-ghost btn-cancel">Annuler</button>
+            <button type="submit" class="btn btn-del" name="supprimer">✕ Supprimer l'accessoire</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const panelAdd = document.getElementById('panel-add');
+  const panelEdit = document.getElementById('panel-edit');
+  const panelDelete = document.getElementById('panel-delete');
+
+  function hideAllPanels() {
+    panelAdd.classList.add('panel-hidden');
+    panelEdit.classList.add('panel-hidden');
+    panelDelete.classList.add('panel-hidden');
+    document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('selected'));
+  }
+
+  document.getElementById('btn-trigger-add').addEventListener('click', () => {
+    hideAllPanels();
+    panelAdd.classList.remove('panel-hidden');
+    panelAdd.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  document.querySelectorAll('.btn-row-edit').forEach(btn => {
+    btn.addEventListener('click', () => {
+      hideAllPanels();
+      const row = btn.closest('tr');
+      row.classList.add('selected');
+      
+      document.getElementById('e-id').value = row.dataset.id;
+      document.getElementById('e-nom').value = row.dataset.nom;
+      
+      panelEdit.classList.remove('panel-hidden');
+      panelEdit.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  document.querySelectorAll('.btn-row-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      hideAllPanels();
+      const row = btn.closest('tr');
+      row.classList.add('selected');
+      
+      document.getElementById('d-id').value = row.dataset.id;
+      document.getElementById('d-confirm').value = row.dataset.nom;
+      
+      panelDelete.classList.remove('panel-hidden');
+      panelDelete.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  document.querySelectorAll('.btn-cancel').forEach(btn => {
+    btn.addEventListener('click', () => {
+      hideAllPanels();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  function updateCount(count) {
+    document.getElementById('row-count').textContent = count + (count > 1 ? " accessoires" : " accessoire");
+  }
+  updateCount(document.querySelectorAll('tbody tr').length);
+
+  document.getElementById('search-accessoire').addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase().trim();
+    let visibleCount = 0;
+    document.querySelectorAll('tbody tr').forEach(row => {
+      if (row.textContent.toLowerCase().includes(term)) {
+        row.style.display = ''; visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+    updateCount(visibleCount);
+  });
+</script>
+
+<?php if(isset($_GET['ajout']) && $_GET['ajout']==1): ?>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      alert("✅ Accessoire ajouté dans la base !");
+      window.history.replaceState({}, document.title, "accessoires_formulaires.php");
+    }, 100);
+  });
+</script>
+<?php endif; ?>
+
+<?php if(isset($_GET['modification']) && $_GET['modification']==1): ?>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      alert("✎ Accessoire modifié avec succès !");
+      window.history.replaceState({}, document.title, "accessoires_formulaires.php");
+    }, 100);
+  });
+</script>
+<?php endif; ?>
+
+<?php if(isset($_GET['suppression']) && $_GET['suppression']==1): ?>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      alert("🗑️ Accessoire supprimé avec succès !");
+      window.history.replaceState({}, document.title, "accessoires_formulaires.php");
+    }, 100);
+  });
+</script>
+<?php endif; ?>
+</body>
+</html>
