@@ -743,7 +743,7 @@ td.td-prix{font-weight:700;color:var(--green)}
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
-      alert("Ligne Ajoutée dans la base !");
+      alert("✅Ligne Ajoutée dans la base !");
       window.history.replaceState({},document.title,"cameras_formulaires.php");
     }, 100);
   });
@@ -754,7 +754,7 @@ td.td-prix{font-weight:700;color:var(--green)}
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
-      alert("Ligne modifiée avec succès !");
+      alert("✎Ligne modifiée avec succès !");
       window.history.replaceState({},document.title,"cameras_formulaires.php");
     }, 100);
   });
@@ -765,7 +765,7 @@ td.td-prix{font-weight:700;color:var(--green)}
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
-      alert("Ligne supprimée avec succès !");
+      alert("🗑️Ligne supprimée avec succès !");
       window.history.replaceState({},document.title,"cameras_formulaires.php");
     }, 100);
   });
