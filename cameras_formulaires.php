@@ -28,7 +28,7 @@ $statut_stock = isset($_POST['statut_stock']) ? htmlspecialchars(trim($_POST['st
 $lien = isset($_POST['lien']) ? htmlspecialchars(trim($_POST['lien'])) : '';
 
 if(!empty($marque) and !empty($modele) and !empty($categorie) and !empty($resolution) and !empty($capteur) and !empty($vision) and !empty($autonomie) and !empty($prix_mru) and !empty($statut_stock) and !empty($lien)){
-$sql="insert into cameras (marque,modele,id_categorie,resolution_max,capteur_k,champ_de_vision,autonomie,prix_mru,statut_stock,lien_image) values(?,?,?,?,?,?,?,?,?,?)";
+$sql="insert into cameras (marque,modele,id_categorie,resolution_max,capteur,champ_de_vision,autonomie,prix_mru,statut_stock,lien_image) values(?,?,?,?,?,?,?,?,?,?)";
 $stmt=$con->prepare($sql);
 $stmt->bind_param("ssiiiiiiss",$marque,$modele,$categorie,$resolution,$capteur,$vision,$autonomie,$prix_mru,$statut_stock,$lien);
 if($stmt->execute()){
@@ -65,7 +65,7 @@ $statut_stock = isset($_POST['statut_stock']) ? htmlspecialchars(trim($_POST['st
 $lien = isset($_POST['lien']) ? htmlspecialchars(trim($_POST['lien'])):'';
 
 if(!empty($categorie) and !empty($resolution) and !empty($capteur) and !empty($vision) and !empty($autonomie) and !empty($prix_mru) and !empty($statut_stock) and !empty($lien)){
-$sql="update cameras set id_categorie=?, resolution_max=?, capteur_k=?, champ_de_vision =?, autonomie=?, prix_mru=?, statut_stock=?, lien_image=? where id_modele=?";
+$sql="update cameras set id_categorie=?, resolution_max=?, capteur=?, champ_de_vision =?, autonomie=?, prix_mru=?, statut_stock=?, lien_image=? where id_modele=?";
 $stmt=$con->prepare($sql);
 $stmt->bind_param("isiiiissi",$categorie,$resolution,$capteur,$vision,$autonomie,$prix_mru,$statut_stock,$lien,$id);
 if ($stmt->execute()){
@@ -425,7 +425,7 @@ td.td-prix{font-weight:700;color:var(--green)}
             <th>Modèle</th>
             <th>Catégorie</th>
             <th>Résolution</th>
-            <th>Capteur_k</th>
+            <th>Capteur</th>
             <th>Champ de vision</th>
             <th>Autonomie</th>
             <th>Prix_mru</th>
@@ -446,7 +446,7 @@ td.td-prix{font-weight:700;color:var(--green)}
            echo " <td class='td-real-modele'>".$tab['modele']."</td>";
            echo " <td><span class='td-cat'>".$tab['id_categorie']."</span></td>";
            echo " <td>".$tab['resolution_max']."</td>";
-           echo " <td>".$tab['capteur_k']."k"."</td>";
+           echo " <td>".$tab['capteur']."</td>";
            echo " <td>".$tab['champ_de_vision']."°"."</td>";
            echo " <td>".$tab['autonomie']."</td>";
            echo " <td class='td-prix'>".$tab['prix_mru']."</td>";
