@@ -51,6 +51,25 @@ $res=mysqli_query($con,$req);
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gestion Catégories — Mauri-Drones</title>
   <style>
+    :root{
+  --bg:#0d0f14;
+  --surface:#13161e;
+  --card:#181c27;
+  --border:#1f2436;
+  --border2:#2a2f45;
+  --blue:#3b9eff;
+  --blue-d:#1a7de8;
+  --blue-glow:rgba(59,158,255,.2);
+  --red:#ff4b4b;
+  --red-glow:rgba(255,75,75,.18);
+  --green:#2fd98e;
+  --green-glow:rgba(47,217,142,.18);
+  --text:#e9ecf5;
+  --muted:#6b7490;
+  --label:#8892b0;
+  --r:14px;
+  --r-sm:8px;
+}
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -69,6 +88,7 @@ $res=mysqli_query($con,$req);
       display: flex;
       align-items: center;
     }
+    
     .logo {
       display: flex;
       align-items: center;
@@ -85,8 +105,47 @@ $res=mysqli_query($con,$req);
       align-items: center;
       justify-content: center;
     }
-    .logo-icon img { width: 40px; height: 40px; object-fit: contain; }
 
+    .logo-icon img { width: 40px; height: 40px; object-fit: contain; }
+.site-header {
+  justify-content: space-between;
+}
+/* Style du bouton Retour Accueil */
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(59, 158, 255, 0.08);
+  border: 1px solid rgba(59, 158, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: var(--r-sm);
+  color: var(--blue);
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-back-home svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--blue);
+  transition: fill 0.2s;
+}
+
+/* Effet au survol (Hover) */
+.btn-back-home:hover {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+  box-shadow: 0 4px 12px var(--blue-glow);
+  text-decoration: none;
+}
+
+.btn-back-home:hover svg {
+  fill: #fff;
+}
     /* ── MAIN ── */
     main {
       max-width: 900px;
@@ -115,6 +174,7 @@ $res=mysqli_query($con,$req);
       text-transform: uppercase;
       margin-bottom: 0.5rem;
     }
+
     h1 {
       font-size: 2rem;
       font-weight: 800;
@@ -400,12 +460,16 @@ $res=mysqli_query($con,$req);
 </head>
 <body>
 
-<nav>
+<nav class="site-header">
   <a class="logo" href="#">
     <div class="logo-icon">
       <img src="logoPI.png" alt="Mauri-Drones logo" />
     </div>
     Mauri-Drones
+  </a>
+  <a href="dashboard.php" class="btn-back-home">
+    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    Retour Accueil
   </a>
 </nav>
 

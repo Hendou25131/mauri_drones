@@ -102,6 +102,7 @@ else echo "<script> alert('erreur lors de la sauvagarde dans la base !') </scrip
 <title>Gestion Catalogue — Mauri-Drones</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
 <style>
+
 :root{
   --bg:#0d0f14;
   --surface:#13161e;
@@ -121,10 +122,13 @@ else echo "<script> alert('erreur lors de la sauvagarde dans la base !') </scrip
   --r:14px;
   --r-sm:8px;
 }
+a{ font-weight: bold; color: white; text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
-
+.logo-img{width:42px;height:42px;object-fit:contain;border-radius: 5px;}
 /* ── HEADER ── */
 .site-header{
   background:rgba(13,15,20,.95);
@@ -137,7 +141,45 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .logo-text{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:.3px;color:var(--text);}
 .logo-dash{color:var(--blue)}
+.site-header {
+  justify-content: space-between;
+}
+/* Style du bouton Retour Accueil */
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(59, 158, 255, 0.08);
+  border: 1px solid rgba(59, 158, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: var(--r-sm);
+  color: var(--blue);
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+.btn-back-home svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--blue);
+  transition: fill 0.2s;
+}
+
+/* Effet au survol (Hover) */
+.btn-back-home:hover {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+  box-shadow: 0 4px 12px var(--blue-glow);
+  text-decoration: none;
+}
+
+.btn-back-home:hover svg {
+  fill: #fff;
+}
 /* ── PAGE ── */
 .page{max-width:920px;margin:48px auto 48px;padding:0 24px}
 
@@ -342,18 +384,12 @@ td.td-prix{font-weight:700;color:var(--green)}
 
 <header class="site-header">
   <a class="logo" href="#">
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="14" y1="2"  x2="14" y2="26" stroke="#e9ecf5" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="2"  y1="14" x2="26" y2="14" stroke="#e9ecf5" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="5"  y1="5"  x2="23" y2="23" stroke="#3b9eff" stroke-width="2"   stroke-linecap="round"/>
-      <line x1="23" y1="5"  x2="5"  y2="23" stroke="#3b9eff" stroke-width="2"   stroke-linecap="round"/>
-      <circle cx="14" cy="14" r="3.2" fill="#3b9eff"/>
-      <circle cx="14" cy="3"  r="2"   fill="#e9ecf5"/>
-      <circle cx="14" cy="25" r="2"   fill="#e9ecf5"/>
-      <circle cx="3"  cy="14" r="2"   fill="#e9ecf5"/>
-      <circle cx="25" cy="14" r="2"   fill="#e9ecf5"/>
-    </svg>
+    <img src="logoPI.png" alt="Logo Mauri-Drones" class="logo-img"/>
     <span class="logo-text">Mauri<span class="logo-dash">-</span>Drones</span>
+  </a>
+  <a href="dashboard.php" class="btn-back-home">
+    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    Retour Accueil
   </a>
 </header>
 
