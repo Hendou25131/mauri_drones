@@ -1,8 +1,8 @@
 <?php
 $con=mysqli_connect("localhost","root","","mauri_drones");
-if(isset($POST_['ajouter'])) {
+if(isset($_POST['ajouter'])) {
 $marque= isset($_POST['marque']) ? htmlspecialchars(trim($_POST['marque'])) : '';
-$modele = isset($_POST['modele'] )? htmlspecialchars(trim($_POST['modele'])) : '';
+$modele = isset($_POST['modele'] ) ? htmlspecialchars(trim($_POST['modele'])) : '';
 switch($_POST['categorie']){
   case "Action":
     $categorie=18;
@@ -472,7 +472,7 @@ td.td-prix{font-weight:700;color:var(--green)}
         <span class="head-chip">ID auto</span>
       </div>
       <div class="card-body">
-        <form id="form-add" method="post" name="fo1">
+        <form id="form-add" method="POST">
           <div class="fgrid">
             <div class="field full">
               <label for="a-marque">Marque <span class="req">*</span></label>
@@ -547,7 +547,7 @@ td.td-prix{font-weight:700;color:var(--green)}
         </div>
       </div>
       <div class="card-body">
-        <form id="form-edit" method="post" name="fo2">
+        <form id="form-edit" method="post">
           <div class="fgrid">
             <div class="field full">
               <label for="e-id">ID de l'article <span class="req">*</span></label>
